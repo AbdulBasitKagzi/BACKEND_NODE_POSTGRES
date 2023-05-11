@@ -1,4 +1,4 @@
-import express, { Express, Request, Response, NextFunction } from "express";
+import express, { Express } from "express";
 require("dotenv").config({ path: "./src/env-files/config.env" });
 import dbConnection from "./db";
 import appRoute from "./routes";

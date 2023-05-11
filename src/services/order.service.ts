@@ -17,12 +17,13 @@ export const createOrderService = async (
 
     const foundCartProduct = await Cart.createQueryBuilder("cart")
       .leftJoinAndSelect("cart.product", "product")
-      .where("cart.user = :userId", { userId: 3 })
+      .where("cart.user = :userId", { userId: userId })
       .getMany();
 
     console.log("cart", foundCartProduct);
 
-    if (!foundCartProduct.length) throw new NotFoundException("Cart not found");
+    if (!foundCartProduct.length)
+      throw new NotFoundException("Cannot place order");
     const total_amount = foundCartProduct.reduce((acc: number, curr: Cart) => {
       return acc + curr.total_amount;
     }, 0);

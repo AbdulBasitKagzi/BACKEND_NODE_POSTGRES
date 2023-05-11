@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 const multer = require("multer");
 
 import { Product } from "../entities/Product.entites";
@@ -8,6 +8,12 @@ import { productLists } from "../data/productConstant";
 import { Size } from "../entities/size.entities";
 import { Gender } from "../entities/Gender.entities";
 import { Color } from "../entities/Color.entities";
+import {
+  filterProductService,
+  getProductService,
+  getProductsService,
+} from "../services/product.service";
+import HttpException from "../exceptions/HttpException";
 
 // multer function to upload image
 
@@ -169,7 +175,11 @@ export const addProduct = async (req: any, res: Response) => {
   }
 };
 
-export const getProducts = async (req: Request, res: Response) => {
+export const getProducts = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     // const products = await Product.createQueryBuilder("product")
     //   .select([
@@ -208,55 +218,29 @@ export const getProducts = async (req: Request, res: Response) => {
     //   },
     // });
 
-    const products = await Product.createQueryBuilder("product")
-      .leftJoinAndSelect("product.gender", "gender")
-      .leftJoinAndSelect("product.category", "category")
-      .leftJoinAndSelect("product.brand", "brand")
-      .innerJoinAndMapMany(
-        "productSizes",
-        ProductSize,
-        "productSizes",
-        "productSizes.product=product.id"
-      )
-      .leftJoinAndMapMany(
-        "product.sizes",
-        Size,
-        "sizes",
-        "sizes.id=productSizes.size_id"
-      )
-      .innerJoinAndMapMany(
-        "productColors",
-        productColors,
-        "productColors",
-        "productColors.product=product.id"
-      )
-      .leftJoinAndMapMany(
-        "product.colors",
-        Color,
-        "colors",
-        "colors.id=productColors.colorId"
-      )
-      .getMany();
-
-    if (!products)
+    const data = await getProductsService(next);
+    if (data?.length) {
       return res
-        .status(404)
-        .json({ error: { code: 404, message: "No products found" } });
+        .status(200)
+        .json({ message: "All products", data: { items: data } });
+    }
 
-    return res
-      .status(200)
-      .json({ message: "All products", data: { items: products } });
+    return;
   } catch (error) {
     console.log("get all products error", error);
-    return res
-      .status(500)
-      .json({ error: { code: 500, message: "Internal server error" } });
+    throw new HttpException(400, "Internal sever error", [
+      { domain: "server", message: "Internal server error!" },
+    ]);
   }
 };
 
-export const getProduct = async (req: Request, res: Response) => {
+export const getProduct = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-    const { id } = req.params;
+    const data = await getProductService(req.params, next);
     // const product = await Product.findOne({
     //   where: { id: parseInt(id) },
     //   // relations: ["productSizes"],
@@ -269,174 +253,65 @@ export const getProduct = async (req: Request, res: Response) => {
     //     category: true,
     //   },
     // });
-    const product = await Product.createQueryBuilder("product")
-      .where("product.id=:id", { id: id })
-      .leftJoinAndSelect("product.gender", "gender")
-      .leftJoinAndSelect("product.category", "category")
-      .leftJoinAndSelect("product.brand", "brand")
-      .innerJoinAndMapMany(
-        "productSizes",
-        ProductSize,
-        "productSizes",
-        "productSizes.product=product.id"
-      )
-      .leftJoinAndMapMany(
-        "product.sizes",
-        Size,
-        "sizes",
-        "sizes.id=productSizes.size_id"
-      )
-      .innerJoinAndMapMany(
-        "productColors",
-        productColors,
-        "productColors",
-        "productColors.product=product.id"
-      )
-      .leftJoinAndMapMany(
-        "product.colors",
-        Color,
-        "colors",
-        "colors.id=productColors.colorId"
-      )
-      .getOne();
+    // const product = await Product.createQueryBuilder("product")
+    //   .where("product.id=:id", { id: id })
+    //   .leftJoinAndSelect("product.gender", "gender")
+    //   .leftJoinAndSelect("product.category", "category")
+    //   .leftJoinAndSelect("product.brand", "brand")
+    //   .innerJoinAndMapMany(
+    //     "productSizes",
+    //     ProductSize,
+    //     "productSizes",
+    //     "productSizes.product=product.id"
+    //   )
+    //   .leftJoinAndMapMany(
+    //     "product.sizes",
+    //     Size,
+    //     "sizes",
+    //     "sizes.id=productSizes.size_id"
+    //   )
+    //   .innerJoinAndMapMany(
+    //     "productColors",
+    //     productColors,
+    //     "productColors",
+    //     "productColors.product=product.id"
+    //   )
+    //   .leftJoinAndMapMany(
+    //     "product.colors",
+    //     Color,
+    //     "colors",
+    //     "colors.id=productColors.colorId"
+    //   )
+    //   .getOne();
 
-    if (!product)
-      return res
-        .status(400)
-        .json({ error: { code: 404, message: "Product not found" } });
-    return res.status(200).json({ message: "Product", data: product });
+    if (data) return res.status(200).json({ message: "Product", data: data });
+    return;
   } catch (error) {
     console.log("get  product error", error);
-    return res
-      .status(500)
-      .json({ error: { code: 500, message: "Internal server error" } });
+    throw new HttpException(400, "Internal sever error", [
+      { domain: "server", message: "Internal server error!" },
+    ]);
   }
 };
 
-export const filterProduct = async (req: Request, res: Response) => {
+export const filterProduct = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-    let result;
-    let postPerPage = 9;
-    let totalCount: number = 0;
+    const data = await filterProductService(req.query, next);
 
-    const { gender, categories, brands, page, min, max, sizes } = req.query;
-    console.log("req query", req.query);
-    // const filterProducts = await Product.find({
-    //   // relations: { gender: true },
-    //   where: { gender: req.body.gender },
-    // });
-
-    // const products = await Product.find({
-    //   relations: {
-    //     productSizes: { size: true },
-    //     productColors: { color: true },
-    //     gender: true,
-    //     brand: true,
-    //     category: true,
-    //   },
-    // });
-    // if (g) {
-    //   filterProducts = await Product.find({
-    //     relations: {
-    //       productSizes: { size: true },
-    //       productColors: { color: true },
-    //       gender: true,
-    //       brand: true,
-    //       category: true,
-    //     },
-    //     where: {
-    //       gender: {
-    //         id: +g,
-    //       },
-    //     },
-    //   });
-    // }
-    // const products: any = await Product.createQueryBuilder("product")
-    //   .select("product")
-    //   .innerJoinAndMapMany(
-    //     "product.ps",
-    //     ProductSize,
-    //     "ps",
-    //     "ps.product=product.id"
-    //   )
-    //   .leftJoinAndMapMany("ps.s", Size, "s", "s.id=ps.size_id")
-    //   // .select(["s.id"])
-    //   .getMany();
-
-    let filterProducts = Product.createQueryBuilder("product")
-      .leftJoinAndSelect("product.gender", "gender")
-      .leftJoinAndSelect("product.category", "category")
-      .leftJoinAndSelect("product.brand", "brand")
-      .innerJoinAndMapMany(
-        "productSizes",
-        ProductSize,
-        "productSizes",
-        "productSizes.product=product.id"
-      )
-      .leftJoinAndMapMany(
-        "product.sizes",
-        Size,
-        "sizes",
-        "sizes.id=productSizes.size_id"
-      )
-      .innerJoinAndMapMany(
-        "productColors",
-        productColors,
-        "productColors",
-        "productColors.product=product.id"
-      )
-      .leftJoinAndMapMany(
-        "product.colors",
-        Color,
-        "colors",
-        "colors.id=productColors.colorId"
-      )
-      .where("gender.id = :gid", { gid: gender });
-
-    if (categories?.length) {
-      filterProducts = filterProducts.andWhere("category.id IN(:...cid)", {
-        cid: categories,
-      });
-    }
-    if (brands?.length) {
-      filterProducts = filterProducts.andWhere("brand.id IN(:...bid)", {
-        bid: brands,
-      });
-    }
-    if (min && max) {
-      filterProducts = filterProducts.andWhere(
-        "product.productCurrentPrice BETWEEN :start AND :end",
-        { start: +min, end: +max }
-      );
-    }
-    if (sizes?.length) {
-      filterProducts = filterProducts.andWhere("sizes.id IN (:...sid)", {
-        sid: sizes,
-      });
-    }
-
-    if (page) {
-      totalCount = await filterProducts.getCount();
-      result = await filterProducts
-        .skip((+page - 1) * postPerPage)
-        .take(postPerPage)
-        .getMany();
-    }
-
-    if (!result)
+    if (data?.result.length)
       return res.status(200).json({
-        error: { code: 404, message: "No products found" },
-        totalCount,
+        message: "Filtered products 😁",
+        data: { items: data.result, count: data.totalCount },
       });
-
-    return res.status(200).json({
-      message: "Filtered products 😁",
-      data: { items: result },
-      totalCount,
-    });
-  } catch (error) {
-    console.log("error", error);
     return;
+  } catch (error) {
+    throw new HttpException(400, "Internal sever error", [
+      { domain: "server", message: "Internal server error!" },
+    ]);
   }
 };
 export const testImage = async (req: any, res: Response) => {};
