@@ -2,20 +2,8 @@
 import { Request, Response, NextFunction } from "express";
 import { check, validationResult } from "express-validator";
 
-exports.validateUser = [
-  check("first_name")
-    .trim()
-    .not()
-    .isEmpty()
-    .withMessage("first name can not be empty!"),
-  check("last_name")
-    .trim()
-    .not()
-    .isEmpty()
-    .withMessage("last name can not be empty!"),
-
+exports.validateLogin = [
   check("email", "Please enter valid email address").isEmail(),
-
   check("password", "Password should contain 6 characters").isLength({
     min: 6,
   }),

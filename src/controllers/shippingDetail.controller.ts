@@ -1,43 +1,24 @@
-import { Request, Response } from "express";
-import { ShippingDetails } from "../entities/ShippingDetails.entities";
+import { NextFunction, Request, Response } from "express";
+import { addShippingDetailService } from "../services/shippingDetail.service";
+import HttpException from "../exceptions/HttpException";
 
-export const addShippingDetail = async (req: Request, res: Response) => {
+export const addShippingDetail = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-    console.log("body", req.body);
-    const {
-      firstName,
-      lastName,
-      emailaddress,
-      phoneNumber,
-      city,
-      address,
-      zipCode,
-      date,
-      time,
-    } = req.body;
-
-    const addShippingDetail = ShippingDetails.create({
-      user: req.userId,
-      first_name: firstName,
-      last_name: lastName,
-      email: emailaddress,
-      phone_number: phoneNumber,
-      city: city,
-      address: address,
-      zip_code: zipCode,
-      date: date,
-      time: time,
-    });
-
-    await ShippingDetails.save(addShippingDetail);
-
-    return res
-      .status(200)
-      .json({ message: "Shipping detail added.", data: { addShippingDetail } });
+    const data = await addShippingDetailService(req.body, req.userId, next);
+    if (data) {
+      return res
+        .status(200)
+        .json({ message: "Shipping detail added.", data: { data } });
+    }
+    return;
   } catch (error) {
     console.log("add shipping detail error", error);
-    return res
-      .status(500)
-      .json({ error: { code: 500, message: "Internal server error" } });
+    throw new HttpException(400, "Internal sever error", [
+      { domain: "server", message: "Internal server error!" },
+    ]);
   }
 };

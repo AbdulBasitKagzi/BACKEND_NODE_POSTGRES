@@ -1,28 +1,21 @@
-import { Request, Response } from "express";
-import { PaymentDetail } from "../entities/userPaymentDetail.entities";
+import { NextFunction, Request, Response } from "express";
+import { addPaymentDetailService } from "../services/paymentDetail.service";
+import HttpException from "../exceptions/HttpException";
 
-export const addPaymentDetail = async (req: Request, res: Response) => {
+export const addPaymentDetail = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-    const { cardName, cardNumber, expiration, cvv, radio_buttons } = req.body;
-
-    const paymentDetail = PaymentDetail.create({
-      User: req.userId,
-      card_type: radio_buttons,
-      card_holder_name: cardName,
-      card_number: cardNumber,
-      expiration: expiration,
-      cvv: cvv,
-    });
-
-    await PaymentDetail.save(paymentDetail);
-
+    const data = await addPaymentDetailService(req.body, req.userId, next);
     return res
       .status(200)
-      .json({ message: "Payment detail added.", data: { paymentDetail } });
+      .json({ message: "Payment detail added.", data: { data } });
   } catch (error) {
     console.log("add shipping detail error", error);
-    return res
-      .status(500)
-      .json({ error: { code: 500, message: "Internal server error" } });
+    throw new HttpException(400, "Internal sever error", [
+      { domain: "server", message: "Internal server error!" },
+    ]);
   }
 };

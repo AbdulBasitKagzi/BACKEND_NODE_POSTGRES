@@ -12,14 +12,21 @@ declare global {
 
 const userSecretKey = process.env.SECRET_KEY;
 
-export const getUserId = (req: Request, res: Response, next: NextFunction) => {
+export const getUserId = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
+    console.log("req", await req.headers);
     const userToken = req.header("Authorization")?.replace("Bearer ", "");
 
     console.log("token", userToken);
 
     if (!userToken)
-      return res.status(400).json({ message: "User not logged in!!!" });
+      return res
+        .status(401)
+        .json({ error: { code: 401, message: "User not logged in!!!" } });
 
     const userId = jwt.verify(userToken, userSecretKey);
     req.userId = userId;

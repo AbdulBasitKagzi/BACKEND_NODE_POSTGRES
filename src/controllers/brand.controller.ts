@@ -1,24 +1,20 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 
 import { Brand } from "../entities/Brand.entities";
+import { addbrand } from "../services/brand.service";
 
-export const addBrand = async (req: Request, res: Response) => {
+export const addBrand = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-    const { value, slug } = req.body;
+    const data = await addbrand(req.body, next);
 
-    const newBrand = Brand.create({
-      value,
-      slug,
-    });
-
-    await Brand.save(newBrand);
-
-    return res.status(200).json({ message: "Brand added", data: { newBrand } });
+    return res.status(200).json({ message: "Brand added", data: { data } });
   } catch (error) {
-    console.log("error creating user", error);
-    return res
-      .status(500)
-      .json({ error: { code: 500, message: "Internal server error" } });
+    next(error);
+    return;
   }
 };
 
