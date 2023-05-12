@@ -15,8 +15,6 @@ export const addProductToCartService = async (
   next: NextFunction
 ) => {
   try {
-    // const { selectedColor, selectedSize } = req.body;
-    console.log("id", pid, body, userId);
     const { id } = pid;
 
     const fetchProduct = await Product.createQueryBuilder("product")
@@ -47,7 +45,6 @@ export const addProductToCartService = async (
       )
       .getOne();
 
-    console.log("fetch", fetchProduct);
     if (!fetchProduct) {
       throw new NotFoundException("Product not found");
     }
@@ -117,7 +114,7 @@ export const updateCartProductService = async (
       );
       return updatedProduct;
     }
-    throw new NotFoundException("Product not found");
+    throw new NotFoundException("Product doesnot exist in user's cart");
   } catch (error) {
     console.log("update cart error", error);
     next(error);
@@ -147,7 +144,6 @@ export const increment_decrement_cartProductService = async (
       .where("cart.user=:user", { user: userId })
       .andWhere("cart.id=:id", { id: id })
       .getOne();
-    console.log("cart", foundCartProduct);
 
     if (!foundCartProduct) {
       throw new NotFoundException("Product doesnot exist in the cart");

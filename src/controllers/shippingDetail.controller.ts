@@ -12,7 +12,7 @@ export const addShippingDetail = async (
     if (data) {
       return res
         .status(200)
-        .json({ message: "Shipping detail added.", data: { data } });
+        .json({ message: "Shipping detail added.", data: data });
     }
     return;
   } catch (error) {

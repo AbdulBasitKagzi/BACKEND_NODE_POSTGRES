@@ -1,15 +1,18 @@
+import * as dotenv from "dotenv";
 import express, { Express } from "express";
-require("dotenv").config({ path: "./src/env-files/config.env" });
+// require("dotenv");
 import dbConnection from "./db";
 import appRoute from "./routes";
-import HttpException from "./exceptions/HttpException";
+
 import errorMiddleware from "./middleware/error";
 
-const cors = require("cors");
+import cors from "cors";
+
+dotenv.config();
 
 const app: Express = express();
 
-const port = process.env.port || 5000;
+// const port = process.env.PORT;
 
 app.use(cors());
 app.use(express.json());
@@ -18,7 +21,7 @@ app.use(appRoute);
 
 app.use(errorMiddleware);
 
-app.listen(port, () => {
-  console.log("Server Started 🎉");
+app.listen(process.env.PORT, () => {
+  console.log("Server Started 🎉", process.env.PORT);
   dbConnection();
 });

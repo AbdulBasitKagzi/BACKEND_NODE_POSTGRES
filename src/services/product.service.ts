@@ -159,8 +159,8 @@ export const filterProductService = async (query: any, next: NextFunction) => {
         .getMany();
     }
     console.log("result", result);
-    if (!result) {
-      throw new NotFoundException("No products found");
+    if (result && !result?.length) {
+      return { result, totalCount };
     }
 
     return { result, totalCount };

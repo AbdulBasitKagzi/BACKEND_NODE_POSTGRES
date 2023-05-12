@@ -1,7 +1,7 @@
-const { check, validationResult } = require("express-validator");
+import { check, validationResult } from "express-validator";
 import { Request, Response, NextFunction } from "express";
 
-exports.validateColor = [
+export const validateColor = [
   check("name").trim().not().isEmpty().withMessage("value connot be empty!"),
   check("hax_value")
     .trim()
@@ -16,17 +16,9 @@ exports.validateColor = [
         error: {
           message: errors
             .array()
-            .map(
-              (err: {
-                type: string;
-                value: string;
-                msg: string;
-                path: string;
-                location: string;
-              }) => {
-                return err.msg;
-              }
-            )
+            .map((err) => {
+              return err.msg;
+            })
             .join(", "),
         },
       });

@@ -1,12 +1,8 @@
 import { Request, Response } from "express";
-// const bcrypt = require("bcrypt");
-import { genSalt, hash, compareSync } from "bcrypt";
-import jwt from "jsonwebtoken";
-// require("dotenv").config({ path: "./src/env-files/.env" });
+
+import { genSalt, hash } from "bcrypt";
 
 import { User } from "../entities/user.entities";
-
-const userSecretKey = process.env.SECRET_KEY;
 
 export const createUser = async (req: Request, res: Response) => {
   try {

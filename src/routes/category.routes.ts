@@ -4,7 +4,8 @@ import {
   addCategory,
   updateCategory,
 } from "../controllers/category.controller";
-const { validateCategory } = require("../validator/category.validate");
+import { validateCategory } from "../validator/category.validate";
+
 export const categoryRoute = express.Router();
 
 categoryRoute.route("/api/category").post(validateCategory, addCategory);

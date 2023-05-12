@@ -1,7 +1,7 @@
 import express from "express";
 
 import { addGender, updateGender } from "../controllers/gender.controller";
-const { validateGender } = require("../validator/gender.validate");
+import { validateGender } from "../validator/gender.validate";
 
 export const genderRoute = express.Router();
 

@@ -9,9 +9,10 @@ import {
 } from "typeorm";
 import { User } from "./user.entities";
 import { Product } from "./Product.entites";
+import { Created_Deleted } from "./created.updated.date.entities";
 
 @Entity()
-export class LikeProducts extends BaseEntity {
+export class LikeProducts extends Created_Deleted {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -22,10 +23,4 @@ export class LikeProducts extends BaseEntity {
   @ManyToOne(() => Product, (product) => product.likeProduct)
   @JoinColumn({ name: "product_id" })
   product: Product | number;
-
-  @CreateDateColumn()
-  created_At: Date;
-
-  @UpdateDateColumn()
-  updated_At: Date;
 }

@@ -13,9 +13,10 @@ import { LikeProducts } from "./LikeProduct.entities";
 import { Cart } from "./Cart.entities";
 import { OrderItems } from "./OrderItems";
 import { OrderDetails } from "./OrderDetails";
+import { Created_Deleted } from "./created.updated.date.entities";
 
 @Entity()
-export class User extends BaseEntity {
+export class User extends Created_Deleted {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -25,17 +26,11 @@ export class User extends BaseEntity {
   @Column()
   last_name: string;
 
-  @Column({ type: "text", unique: true })
+  @Column({ type: "varchar", unique: true })
   email: string;
 
   @Column()
   password: string;
-
-  @CreateDateColumn()
-  created_At: Date;
-
-  @UpdateDateColumn()
-  updated_At: Date;
 
   // @ManyToOne(() => ShippingDetails, (shipping) => shipping.user)
   // @JoinColumn({ name: "user_id" })

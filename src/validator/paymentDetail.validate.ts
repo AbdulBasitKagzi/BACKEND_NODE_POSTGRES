@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 
-const { check, validationResult } = require("express-validator");
+import { check, validationResult } from "express-validator";
 
-exports.validatePaymentDetail = [
+export const validatePaymentDetail = [
   check("cardName", "Card holder name should not be empty")
     .trim()
     .not()
@@ -26,17 +26,9 @@ exports.validatePaymentDetail = [
         error: {
           message: errors
             .array()
-            .map(
-              (err: {
-                type: string;
-                value: string;
-                msg: string;
-                path: string;
-                location: string;
-              }) => {
-                return err.msg;
-              }
-            )
+            .map((err) => {
+              return err.msg;
+            })
             .join(","),
         },
       });

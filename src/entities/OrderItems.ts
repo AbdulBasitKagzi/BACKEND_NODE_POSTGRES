@@ -13,9 +13,10 @@ import { Color } from "./Color.entities";
 import { Product } from "./Product.entites";
 import { User } from "./user.entities";
 import { OrderDetails } from "./OrderDetails";
+import { Created_Deleted } from "./created.updated.date.entities";
 
 @Entity()
-export class OrderItems extends BaseEntity {
+export class OrderItems extends Created_Deleted {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -24,13 +25,6 @@ export class OrderItems extends BaseEntity {
 
   @Column()
   amount: number;
-
-  @Column()
-  @CreateDateColumn()
-  created_At: Date;
-
-  @UpdateDateColumn()
-  updated_At: Date;
 
   @ManyToOne(() => Size, (size) => size.orderItem, { onDelete: "CASCADE" })
   @JoinColumn({

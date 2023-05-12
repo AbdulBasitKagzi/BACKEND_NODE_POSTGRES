@@ -9,9 +9,10 @@ import {
   JoinColumn,
 } from "typeorm";
 import { User } from "./user.entities";
+import { Created_Deleted } from "./created.updated.date.entities";
 
 @Entity()
-export class PaymentDetail extends BaseEntity {
+export class PaymentDetail extends Created_Deleted {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -29,12 +30,6 @@ export class PaymentDetail extends BaseEntity {
 
   @Column()
   cvv: string;
-
-  @CreateDateColumn()
-  created_At: Date;
-
-  @UpdateDateColumn()
-  updated_At: Date;
 
   @ManyToOne(() => User, (user) => user.UserPaymentDetail)
   @JoinColumn({ name: "user_id" })

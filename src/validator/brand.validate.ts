@@ -1,7 +1,7 @@
-const { check, validationResult } = require("express-validator");
 import { Request, Response, NextFunction } from "express";
+import { check, validationResult } from "express-validator";
 
-exports.validateBrand = [
+export const validateBrand = [
   check("value").trim().not().isEmpty().withMessage("value connot be empty!"),
   check("slug").trim().not().isEmpty().withMessage("slug cannot be empty!"),
 
@@ -12,17 +12,9 @@ exports.validateBrand = [
         error: {
           message: errors
             .array()
-            .map(
-              (err: {
-                type: string;
-                value: string;
-                msg: string;
-                path: string;
-                location: string;
-              }) => {
-                return err.msg;
-              }
-            )
+            .map((err) => {
+              return err.msg;
+            })
             .join(", "),
         },
       });

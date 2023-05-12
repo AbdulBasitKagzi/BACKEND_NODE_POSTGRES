@@ -8,9 +8,10 @@ import {
   OneToMany,
 } from "typeorm";
 import { Product } from "./Product.entites";
+import { Created_Deleted } from "./created.updated.date.entities";
 
 @Entity()
-export class Gender extends BaseEntity {
+export class Gender extends Created_Deleted {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -19,12 +20,6 @@ export class Gender extends BaseEntity {
 
   @Column()
   slug: string;
-
-  @CreateDateColumn()
-  created_At: Date;
-
-  @UpdateDateColumn()
-  updated_At: Date;
 
   @OneToMany(() => Product, (product) => product.gender)
   product: Product[];

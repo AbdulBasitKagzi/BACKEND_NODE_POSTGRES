@@ -1,8 +1,11 @@
+import * as dotenv from "dotenv";
 import { NextFunction, Request, Response } from "express";
+import { logginService } from "../services/auth.service";
+import HttpException from "../exceptions/HttpException";
+
+dotenv.config();
 
 const userSecretKey = process.env.SECRET_KEY;
-import { loggin } from "../services/auth.service";
-import HttpException from "../exceptions/HttpException";
 
 export const loginUser = async (
   req: Request,
@@ -10,8 +13,7 @@ export const loginUser = async (
   next: NextFunction
 ) => {
   try {
-    console.log("req", req.body);
-    const data = await loggin(req.body, userSecretKey as string, next);
+    const data = await logginService(req.body, userSecretKey as string, next);
 
     if (data)
       return res.status(200).json({

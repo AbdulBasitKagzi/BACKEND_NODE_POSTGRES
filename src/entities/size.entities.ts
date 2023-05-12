@@ -13,9 +13,10 @@ import {
 import { Product } from "./Product.entites";
 import { ProductSize } from "./product_size.entities";
 import { OrderItems } from "./OrderItems";
+import { Created_Deleted } from "./created.updated.date.entities";
 
 @Entity()
-export class Size extends BaseEntity {
+export class Size extends Created_Deleted {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -24,12 +25,6 @@ export class Size extends BaseEntity {
 
   @Column()
   slug: string;
-
-  @CreateDateColumn()
-  created_At: Date;
-
-  @UpdateDateColumn()
-  updated_At: Date;
 
   // @ManyToMany(() => Product, (product: any) => product.sizes)
   // product: Product[];

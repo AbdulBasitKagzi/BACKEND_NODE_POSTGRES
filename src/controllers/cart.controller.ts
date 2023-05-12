@@ -1,10 +1,5 @@
 import express, { Response, Request, NextFunction } from "express";
-import { Cart, CartTypes } from "../entities/Cart.entities";
-import { Product } from "../entities/Product.entites";
-import { ProductSize } from "../entities/product_size.entities";
-import { Size } from "../entities/size.entities";
-import { productColors } from "../entities/product_color.entities";
-import { Color } from "../entities/Color.entities";
+
 import {
   addProductToCartService,
   getCartProductsService,

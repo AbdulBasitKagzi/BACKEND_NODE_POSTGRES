@@ -11,9 +11,10 @@ import {
 } from "typeorm";
 import { User } from "./user.entities";
 import { OrderDetails } from "./OrderDetails";
+import { Created_Deleted } from "./created.updated.date.entities";
 
 @Entity()
-export class ShippingDetails extends BaseEntity {
+export class ShippingDetails extends Created_Deleted {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -26,7 +27,7 @@ export class ShippingDetails extends BaseEntity {
   @Column()
   email: string;
 
-  @Column({ type: "numeric", nullable: true })
+  @Column({ type: "numeric" })
   phone_number: number;
 
   @Column()
@@ -43,12 +44,6 @@ export class ShippingDetails extends BaseEntity {
 
   @Column()
   zip_code: string;
-
-  @CreateDateColumn()
-  created_At: Date;
-
-  @UpdateDateColumn()
-  updated_At: Date;
 
   @ManyToOne(() => User, (user) => user.shipping)
   @JoinColumn({ name: "user_id" })

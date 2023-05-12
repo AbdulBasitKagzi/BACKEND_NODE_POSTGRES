@@ -1,7 +1,7 @@
 import express from "express";
 
 import { addColor, updateColor } from "../controllers/color.controller";
-const { validateColor } = require("../validator/color.validate");
+import { validateColor } from "../validator/color.validate";
 export const colorRoute = express.Router();
 
 colorRoute.route("/api/color").post(validateColor, addColor);

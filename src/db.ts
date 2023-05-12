@@ -1,4 +1,3 @@
-// const Client = require("pg");
 import { createConnection, DataSource } from "typeorm";
 import { User } from "./entities/user.entities";
 import { Brand } from "./entities/Brand.entities";
@@ -15,6 +14,7 @@ import { LikeProducts } from "./entities/LikeProduct.entities";
 import { Cart } from "./entities/Cart.entities";
 import { OrderItems } from "./entities/OrderItems";
 import { OrderDetails } from "./entities/OrderDetails";
+import { Created_Deleted } from "./entities/created.updated.date.entities";
 
 const dbConnection = async () => {
   try {
@@ -41,6 +41,7 @@ const dbConnection = async () => {
         Cart,
         OrderItems,
         OrderDetails,
+        Created_Deleted,
       ],
       synchronize: true,
       logging: "all",
@@ -53,23 +54,3 @@ const dbConnection = async () => {
 };
 
 export default dbConnection;
-
-// const AppDataSource = new DataSource({
-//   type: "postgres",
-//   port: 5432,
-//   host: "localhost",
-//   database: "e-commerce",
-//   username: "postgres",
-//   password: "abdulbasit",
-//   entities: [User, Brand, Color, Category, Size, Gender, Product],
-//   synchronize: true,
-// });
-
-// AppDataSource.initialize()
-//   .then(() => {
-//     console.log;
-//     ("Data source has been initialised");
-//   })
-//   .catch((err) => {
-//     console.log("Error connecting to database 😞");
-//   });

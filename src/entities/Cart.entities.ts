@@ -11,6 +11,7 @@ import {
 } from "typeorm";
 import { User } from "./user.entities";
 import { Product } from "./Product.entites";
+import { Created_Deleted } from "./created.updated.date.entities";
 
 export enum CartTypes {
   INCREMENT = "increment",
@@ -19,7 +20,7 @@ export enum CartTypes {
 }
 
 @Entity()
-export class Cart extends BaseEntity {
+export class Cart extends Created_Deleted {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -45,13 +46,6 @@ export class Cart extends BaseEntity {
   @ManyToOne(() => Product, (product) => product.cart, { onDelete: "CASCADE" })
   @JoinColumn({ name: "product_id" })
   product: Product[] | number;
-
-  @Column()
-  @CreateDateColumn()
-  created_At: Date;
-
-  @UpdateDateColumn()
-  updated_At: Date;
 
   @DeleteDateColumn()
   deleted_At: Date;

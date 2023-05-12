@@ -1,4 +1,3 @@
-// const { check, validationResult } = require("express-validator");
 import { Request, Response, NextFunction } from "express";
 import { check, validationResult } from "express-validator";
 

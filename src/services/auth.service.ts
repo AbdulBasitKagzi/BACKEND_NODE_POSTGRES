@@ -4,12 +4,13 @@ import jwt from "jsonwebtoken";
 import NotFoundException from "../exceptions/NotFoundException";
 import { NextFunction } from "express";
 
-export const loggin = async (
+export const logginService = async (
   body: { email: string; password: string },
   userSecretKey: string,
   next: NextFunction
 ) => {
   try {
+    console.log("secret", userSecretKey);
     const { email, password } = body;
 
     const user = await User.findOneBy({ email });

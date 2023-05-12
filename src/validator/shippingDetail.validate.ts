@@ -2,24 +2,21 @@ import { NextFunction, Request, Response } from "express";
 
 const { check, validationResult } = require("express-validator");
 
-exports.validateShippingDetail = [
+export const validateShippingDetail = [
   check("firstName", "First name should not be empty").trim().not().isEmpty(),
   check("lastName", "Last name should not be empty").trim().not().isEmpty(),
   check("emailaddress", "Please enter valid email address").isEmail(),
   check("city", "City should not be empty").not().isEmpty(),
-  // check("phoneNumber", "Enter 10 digit phone number")
-  //   .isLength({
-  //     min: 10,
-  //     max: 10,
-  //   })
-  //   .matches(/^[0-9\s]+$/),
+
   check("phoneNumber", "Enter 10 digit phone number")
     .isMobilePhone()
-    .isLength({ max: 10 }),
+    .withMessage("Enter valid phone number")
+    .isLength({ min: 10, max: 10 }),
   check("address", "Address should not be empty").trim().not().isEmpty(),
   check("zipCode", "Please enter valid zip code")
     .isLength({ min: 6, max: 6 })
     .isNumeric(),
+  check("date", "Enter valid date").isISO8601().toDate(),
 
   (req: Request, res: Response, next: NextFunction) => {
     const errors = validationResult(req);

@@ -10,9 +10,10 @@ import {
 } from "typeorm";
 import { productColors } from "./product_color.entities";
 import { OrderItems } from "./OrderItems";
+import { Created_Deleted } from "./created.updated.date.entities";
 
 @Entity()
-export class Color extends BaseEntity {
+export class Color extends Created_Deleted {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -29,10 +30,4 @@ export class Color extends BaseEntity {
 
   @OneToMany(() => OrderItems, (order) => order.color)
   orderItem: OrderItems[];
-
-  @CreateDateColumn()
-  created_At: Date;
-
-  @UpdateDateColumn()
-  updated_At: Date;
 }

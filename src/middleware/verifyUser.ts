@@ -1,6 +1,8 @@
+import * as dotenv from "dotenv";
 import { Express, Request, Response, NextFunction } from "express";
-const jwt = require("jsonwebtoken");
-require("dotenv").config({ path: "../src/env-files/config.env" });
+import jwt from "jsonwebtoken";
+
+dotenv.config();
 
 declare global {
   namespace Express {
@@ -18,18 +20,17 @@ export const getUserId = async (
   next: NextFunction
 ) => {
   try {
-    console.log("req", await req.headers);
     const userToken = req.header("Authorization")?.replace("Bearer ", "");
 
-    console.log("token", userToken);
+    console.log("token", userToken, userSecretKey);
 
     if (!userToken)
       return res
         .status(401)
         .json({ error: { code: 401, message: "User not logged in!!!" } });
 
-    const userId = jwt.verify(userToken, userSecretKey);
-    req.userId = userId;
+    const userId = jwt.verify(userToken, userSecretKey as string);
+    req.userId = Number(userId);
     next();
     return;
   } catch (error) {
