@@ -13,10 +13,11 @@
     "pg": "^8.10.0",
     "postgres": "^3.3.5",
     "ts-node": "^10.9.1",
-    "typeorm": "^0.3.15"
+    "typeorm": "^0.3.15",
+    "vercel": "^30.2.1"
   },
   "scripts": {
-    "start": "nodemon --exec npx ts-node ./src/index.ts"
+    "start": "node index.ts"
   },
   "name": "e-commerce_backend",
   "version": "1.0.0",

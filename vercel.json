@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "name": "e-commerce",
+  "builds": [{ "src": "index.ts", "use": "@vercel/node" }],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/index.ts"
+    }
+  ]
+}
