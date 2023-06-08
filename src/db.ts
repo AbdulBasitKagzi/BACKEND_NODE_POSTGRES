@@ -1,3 +1,5 @@
+const postgres = require("postgres");
+require("dotenv").config();
 import { createConnection, DataSource } from "typeorm";
 import { User } from "./entities/user.entities";
 import { Brand } from "./entities/Brand.entities";
@@ -17,14 +19,12 @@ import { OrderDetails } from "./entities/OrderDetails";
 import { Created_Deleted } from "./entities/created.updated.date.entities";
 
 const dbConnection = async () => {
+  const { PGHOST, PGDATABASE, PGUSER, PGPASSWORD, ENDPOINT_ID } = process.env;
   try {
     return await createConnection({
       type: "postgres",
-      port: 5432,
-      host: "localhost",
-      database: "e-commerce",
-      username: "postgres",
-      password: "abdulbasit",
+      url: `postgres://${PGUSER}:${PGPASSWORD}@${PGHOST}/${PGDATABASE}?options=project%3D${ENDPOINT_ID}`,
+      ssl: { rejectUnauthorized: false },
       entities: [
         User,
         Brand,
